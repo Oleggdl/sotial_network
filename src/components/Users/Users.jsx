@@ -1,45 +1,66 @@
+import * as axios from 'axios'
 import React from 'react'
 import styles from './Users.module.css'
+import userPhoto from '../../assets/user.png'
 
-let Users = (props) => {
 
-    if (props.users.length === 0) {
-        props.setUsers([
-            { id: 1, photoUrl: 'https://get.wallhere.com/photo/3840x2160-px-BMW-car-sports-car-1110247.jpg', followed: true, fullName: 'Oleg', status: 'I am a junior developer', location: { sity: 'Pinsk', country: 'Belarus' } },
-            { id: 2, photoUrl: 'https://get.wallhere.com/photo/3840x2160-px-BMW-car-sports-car-1110247.jpg', followed: true, fullName: 'Sasha', status: 'I am a senior developer', location: { sity: 'Moscow', country: 'Russia' } },
-            { id: 3, photoUrl: 'https://get.wallhere.com/photo/3840x2160-px-BMW-car-sports-car-1110247.jpg', followed: false, fullName: 'Andrew', status: 'I am a middle developer', location: { sity: 'Kiev', country: 'Ukraine' } },
-        ])
+class Users extends React.Component {
+    componentDidMount() {
+        axios.get(`https://social-network.samuraijs.com/api/1.0/users?page=${this.props.currentPage}&count=${this.props.pageSize}`)
+            .then(response => {
+                this.props.setUsers(response.data.items)
+                this.props.setTotalUserCount(response.data.totalCount)
+
+            })
     }
-
-
-
-    return <div>
-        {
-            props.users.map(u => <div key={u.id}>
-                <span>
-                    <div><img src={u.photoUrl} className={styles.userPhoto} /></div>
-                    <div>
-                        {u.followed
-                            ? <button onClick={() => { props.unfollow(u.id) }}>Unfollow</button>
-                            : <button onClick={() => { props.follow(u.id) }}>Follow</button>
-                        }
-
-                    </div>
-
-                </span>
-                <span>
-                    <span>
-                        <div>{u.fullName}</div>
-                        <div>{u.status}</div>
-                    </span>
-                    <span>
-                        <div>{u.location.country}</div>
-                        <div>{u.location.sity}</div>
-                    </span>
-                </span>
-            </div>)
+    onPageChenge = (pageNum) => {
+        this.props.setCurrentPage(pageNum)
+        axios.get(`https://social-network.samuraijs.com/api/1.0/users?page=${pageNum}&count=${this.props.pageSize}`)
+            .then(response => {
+                this.props.setUsers(response.data.items)
+            })
+    }
+    render() {
+        let pagesCount = Math.ceil(this.props.totalUsersCount / this.props.pageSize)
+        let pages = []
+        for (let i = 1; i <= pagesCount; i++) {
+            pages.push(i)
         }
-    </div>
+        return <div>
+            <div>
+                {pages.map(p => {
+                    return <span className={this.props.currentPage === p && styles.selectedPage}
+                        onClick={(e) => { this.onPageChenge(p) }} >{p}</span>
+                    
+                })}
+            </div>
+            {
+                this.props.users.map(u => <div key={u.id}>
+                    <span>
+                        <div><img src={u.photos.small !== null ? u.photos.small : userPhoto} className={styles.userPhoto} /></div>
+                        <div>
+                            {u.followed
+                                ? <button onClick={() => { this.props.unfollow(u.id) }}>Unfollow</button>
+                                : <button onClick={() => { this.props.follow(u.id) }}>Follow</button>
+                            }
+
+                        </div>
+
+                    </span>
+                    <span>
+                        <span>
+                            <div>{u.name}</div>
+                            <div>{u.status}</div>
+                        </span>
+                        <span>
+                            <div>{'u.location.country'}</div>
+                            <div>{'u.location.sity'}</div>
+                        </span>
+                    </span>
+                </div>)
+            }
+        </div>
+    }
 }
 
 
