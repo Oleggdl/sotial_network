@@ -6,4 +6,16 @@
 .header img {
     width: 20px;
 }
-
+.loginBlock{
+    
+    
+    float: right;
+}
+.loginBlockNav{
+    color: #fff;
+    text-decoration: none;
+    transition: .3s linear;
+}
+.loginBlockNav:hover{
+    color: rgb(255, 0, 0);
+}

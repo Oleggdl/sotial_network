@@ -1,30 +1,18 @@
-import * as axios from 'axios'
 import React from 'react'
 import { connect } from 'react-redux'
-import { follow, setCurrentPage, setTotalUserCount, setUsers, toggleIsFenching, unfollow } from '../../redux/users-reducer'
+import {
+    follow, setCurrentPage, unfollow, toggleFollowingProgress, getUsers
+} from '../../redux/users-reducer'
 import Preloader from '../common/preloader/Preloader'
 import Users from './Users'
 
 
 class UsersContainer extends React.Component {
     componentDidMount() {
-        this.props.toggleIsFenching(true)
-        axios.get(`https://social-network.samuraijs.com/api/1.0/users?page=${this.props.currentPage}&count=${this.props.pageSize}`)
-            .then(response => {
-                this.props.toggleIsFenching(false)
-                this.props.setUsers(response.data.items)
-                this.props.setTotalUserCount(response.data.totalCount)
-
-            })
+        this.props.getUsers(this.props.currentPage, this.props.pageSize)
     }
     onPageChenge = (pageNum) => {
-        this.props.setCurrentPage(pageNum)
-        this.props.toggleIsFenching(true)
-        axios.get(`https://social-network.samuraijs.com/api/1.0/users?page=${pageNum}&count=${this.props.pageSize}`)
-            .then(response => {
-                this.props.toggleIsFenching(false)
-                this.props.setUsers(response.data.items)
-            })
+        this.props.getUsers(pageNum, this.props.pageSize)
     }
     render() {
         return <>
@@ -38,6 +26,7 @@ class UsersContainer extends React.Component {
                 follow={this.props.follow}
                 unfollow={this.props.unfollow}
                 onPageChenge={this.onPageChenge}
+                followingInProgress={this.props.followingInProgress}
 
             />
         </>
@@ -51,35 +40,10 @@ let mapStateToProps = (state) => {
         totalUsersCount: state.usersPage.totalUsersCount,
         currentPage: state.usersPage.currentPage,
         isFetching: state.usersPage.isFetching,
+        followingInProgress: state.usersPage.followingInProgress
     }
 }
 
-// let mapDispatchToProps = (dispatch) => {
-//     return {
-//         follow: (userId) => {
-//             dispatch(followAC(userId))
-//         },
-//         unfollow: (userId) => {
-//             dispatch(unfollowAC(userId))
-//         },
-//         setUsers: (users) => {
-//             dispatch(setUsersAC(users))
-//         },
-//         setCurrentPage: (currentPage) => {
-//             dispatch(setCurrentPageAC(currentPage))
-//         },
-//         setTotalUserCount: (totalCount) => {
-//             dispatch(setTotalUserCountAC(totalCount))
-//         },
-//         toggleIsFenching: (isFetching) => {
-//             dispatch(toggleIsFenchingAC(isFetching))
-//         }
-
-//     }
-// }
-
-
-
 export default connect(mapStateToProps, {
-    follow, unfollow, setUsers, setCurrentPage, setTotalUserCount, toggleIsFenching
+    follow, unfollow, setCurrentPage, toggleFollowingProgress, getUsers
 })(UsersContainer)
