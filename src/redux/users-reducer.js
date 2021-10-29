@@ -97,6 +97,7 @@ export const getUsers = (currentPage, pageSize) => {
     }
 }
 
+
 export const follow = (userId) => {
     return (dispatch) => {
 
