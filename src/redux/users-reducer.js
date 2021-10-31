@@ -87,6 +87,7 @@ export const getUsers = (currentPage, pageSize) => {
     return (dispatch) => {
 
         dispatch(toggleIsFenching(true))
+        dispatch(setCurrentPage(currentPage))
 
         usersAPI.getUsers(currentPage, pageSize).then(data => {
             dispatch(toggleIsFenching(false))
