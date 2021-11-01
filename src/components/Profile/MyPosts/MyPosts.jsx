@@ -7,11 +7,16 @@ import Post from './Post/Post';
 
 
 
-const MyPosts = (props) => {
-    let postsElements =
-        props.posts.map(p => <Post message={p.message} likesCount={p.likesCount} />);
+const MyPosts = React.memo((props) => {
 
-    let newPostElement = React.createRef();
+
+    console.log(1)
+
+    let postsElements =
+        [...props.posts]
+            .reverse()
+            .map(p => <Post message={p.message} likesCount={p.likesCount} />)
+
 
     let onAddPost = (values) => {
         props.addPost(values.newPostText);
@@ -26,7 +31,7 @@ const MyPosts = (props) => {
             </div>
         </div>
     )
-}
+})
 
 
 const maxLength10 = maxLengthCreator(10)
@@ -37,7 +42,7 @@ let AddNewPostForm = (props) => {
         <form onSubmit={props.handleSubmit} >
             <div>
                 <Field name={'newPostText'} component={Textarea} placeholder={'Post message'}
-                validate={[required, maxLength10]} />
+                    validate={[required, maxLength10]} />
             </div>
             <div>
                 <button>Add post</button>
