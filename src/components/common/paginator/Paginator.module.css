@@ -1,7 +1,14 @@
-.selectedPage{
-    font-weight: bold;
-    
+.paginator {
+    margin: 10px;
 }
-.cursorPage{
+.pageNumber {
     cursor: pointer;
+    padding: 2px 5px;
+    border: 1px solid blue;
+}
+
+.pageNumber.selectedPage {
+    cursor: pointer;
+    font-weight: bold;
+    border-color: rgb(0, 17, 168);
 }
