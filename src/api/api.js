@@ -36,7 +36,20 @@ export const profileAPI = {
     },
     updateStatus(status) {
         return instance.put(`profile/status/`, { status: status })
+    },
+    savePhoto(photoFile) {
+        const formData = new FormData()
+        formData.append('zcxvb', photoFile)
+        return instance.put(`profile/photo/`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+    },
+    saveProfile(profile) {
+        return instance.put(`profile`, profile)
     }
+
 }
 
 export const authAPI = {
@@ -51,13 +64,5 @@ export const authAPI = {
     },
 }
 
-
-
-// export let getUsers2 = (currentPage = 1, pageSize = 10) => {
-//     return instance.get(`follow?page=${currentPage}&count=${pageSize}`).then(response => {
-//         return response.data
-//     })
-
-// }
 
 
